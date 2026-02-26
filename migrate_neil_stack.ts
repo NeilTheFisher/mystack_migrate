@@ -7,6 +7,8 @@ import biomeSettings from "./files/biome.json.txt" with { type: "text" };
 import fmtFile from "./files/fmt.ts.txt" with { type: "text" };
 import resetDTS from "./files/reset.d.ts.txt" with { type: "text" };
 
+const start = Date.now();
+
 // exit if there are any git changes (ignoring staged changes)
 const filesChanged = Number(await $`git diff --numstat | wc -l`.text());
 if (filesChanged > 0) {
@@ -34,7 +36,7 @@ const [packageJsonText, vscodeText] = await Promise.all([
   Bun.file(".vscode/settings.json")
     .text()
     .catch((err) => {
-      if (err.code === "ENOENT") {
+      if ((err as any).code === "ENOENT") {
         return "{}";
       }
     }),
@@ -74,3 +76,6 @@ await Promise.all([bunAddPromise, $`bun fmt`]);
 
 // requires user input so it goes last
 await $`bun update-deps`;
+
+const fin = Date.now() - start;
+console.log(`Migration completed in ${fin}ms!`);
