@@ -25,8 +25,19 @@ const bunAddPromise = $`bun add -D @types/bun @total-typescript/ts-reset oxlint-
 
 // read package.json and vscode settings concurrently
 const [packageJsonText, vscodeText] = await Promise.all([
-  Bun.file("package.json").text(),
-  Bun.file(".vscode/settings.json").text(),
+  Bun.file("package.json")
+    .text()
+    .catch(() => {
+      console.log("Bruh");
+      process.exit(1);
+    }),
+  Bun.file(".vscode/settings.json")
+    .text()
+    .catch((err) => {
+      if (err.code === "ENOENT") {
+        return "{}";
+      }
+    }),
 ]);
 
 const currentPackageJson = JSON.parse(packageJsonText) as {
