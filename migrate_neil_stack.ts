@@ -2,7 +2,7 @@ import { $ } from "bun";
 
 import oxfmtSettings from "./files/.oxfmtrc.json.txt" with { type: "text" };
 import oxlintSettings from "./files/.oxlintrc.json.txt" with { type: "text" };
-import vscodeSettings from "./files/.vscode/settings.json5";
+import vscodeSettings from "./files/.vscode/settings.json.txt" with { type: "text" };
 import biomeSettings from "./files/biome.json.txt" with { type: "text" };
 import fmtFile from "./files/fmt.ts.txt" with { type: "text" };
 import resetDTS from "./files/reset.d.ts.txt" with { type: "text" };
@@ -68,10 +68,11 @@ Object.assign(currentPackageJson, {
   },
 });
 
+const vscodeSettingsJSON = Bun.JSONC.parse(vscodeSettings);
 const currentVscodeSettings = JSON.parse(vscodeText) as {
   [key: string]: object;
 };
-Object.assign(currentVscodeSettings, vscodeSettings);
+Object.assign(currentVscodeSettings, vscodeSettingsJSON);
 
 // perform all writes in parallel
 await Promise.all([
