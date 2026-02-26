@@ -2,12 +2,26 @@ import { $ } from "bun";
 
 import oxfmtSettings from "./files/.oxfmtrc.json.txt" with { type: "text" };
 import oxlintSettings from "./files/.oxlintrc.json.txt" with { type: "text" };
-import vscodeSettings from "./files/.vscode/settings.json";
+import vscodeSettings from "./files/.vscode/settings.json5";
 import biomeSettings from "./files/biome.json.txt" with { type: "text" };
 import fmtFile from "./files/fmt.ts.txt" with { type: "text" };
 import resetDTS from "./files/reset.d.ts.txt" with { type: "text" };
 
-await $`bun add -D @types/bun @total-typescript/ts-reset oxlint-tsgolint`;
+// exit if there are any git changes (ignoring staged changes)
+const filesChanged = Number(await $`git diff --numstat | wc -l`.text());
+if (filesChanged > 0) {
+  console.error(
+    "Git working directory has uncommitted changes. Please commit or stash changes before running this script."
+  );
+  process.exit(1);
+}
+
+const bunAddPromise = $`bun add -D @types/bun @total-typescript/ts-reset oxlint-tsgolint`.catch(
+  (err) => {
+    console.error("Failed to add dependencies:", err);
+    process.exit(1);
+  }
+);
 
 // read package.json and vscode settings concurrently
 const [packageJsonText, vscodeText] = await Promise.all([
@@ -45,7 +59,7 @@ await Promise.all([
   Bun.write("fmt.ts", fmtFile),
 ]);
 
-await $`bun fmt`;
+await Promise.all([bunAddPromise, $`bun fmt`]);
 
 // requires user input so it goes last
 await $`bun update-deps`;
