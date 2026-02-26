@@ -18,6 +18,7 @@ if (filesChanged > 0) {
   process.exit(1);
 }
 
+// oxlint-disable-next-line promise/prefer-await-to-then
 const bunAddPromise = $`bun add -D @types/bun @total-typescript/ts-reset oxlint-tsgolint`.catch(
   (err) => {
     console.error("Failed to add dependencies:", err);
@@ -39,6 +40,7 @@ const [packageJsonText, vscodeText] = await Promise.all([
       if ((err as any).code === "ENOENT") {
         return "{}";
       }
+      process.exit(1);
     }),
 ]);
 
@@ -50,7 +52,7 @@ Object.assign(currentPackageJson.scripts, {
   lint: "turbo lint:oxlint lint:biome lint:oxfmt",
   "lint:biome": "biome check --diagnostic-level=error",
   "lint:oxfmt":
-    "oxfmt --threads=2 --check || (echo '\n\n\nRun `bun fmt` to fix formatting issues!\n\n\n'; exit 1)",
+    "oxfmt --threads=2 --check || (echo '\\n\\n\\nRun `bun fmt` to fix formatting issues!\\n\\n\\n'; exit 1)",
   "lint:oxlint": "oxlint --threads=2 --type-aware --type-check --quiet",
   prepare: "husky",
   "update-deps": "bun update -i -r",
