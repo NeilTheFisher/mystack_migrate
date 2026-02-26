@@ -44,7 +44,7 @@ const [packageJsonText, vscodeText] = await Promise.all([
     }),
 ]);
 
-const currentPackageJson = JSON.parse(packageJsonText) as {
+const currentPackageJson = Bun.JSONC.parse(packageJsonText) as {
   scripts: Record<string, string>;
 };
 Object.assign(currentPackageJson.scripts, {
@@ -69,7 +69,7 @@ Object.assign(currentPackageJson, {
 });
 
 const vscodeSettingsJSON = Bun.JSONC.parse(vscodeSettings);
-const currentVscodeSettings = JSON.parse(vscodeText) as {
+const currentVscodeSettings = Bun.JSONC.parse(vscodeText) as {
   [key: string]: object;
 };
 Object.assign(currentVscodeSettings, vscodeSettingsJSON);
