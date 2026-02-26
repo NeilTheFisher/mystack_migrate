@@ -4,6 +4,7 @@ import oxfmtSettings from "./files/.oxfmtrc.json.txt" with { type: "text" };
 import oxlintSettings from "./files/.oxlintrc.json.txt" with { type: "text" };
 import vscodeSettings from "./files/.vscode/settings.json";
 import biomeSettings from "./files/biome.json.txt" with { type: "text" };
+import fmtFile from "./files/fmt.ts.txt" with { type: "text" };
 import resetDTS from "./files/reset.d.ts.txt" with { type: "text" };
 
 await $`bun add -D @types/bun @total-typescript/ts-reset oxlint-tsgolint`;
@@ -41,6 +42,7 @@ await Promise.all([
   Bun.write(".vscode/settings.json", `${JSON.stringify(currentVscodeSettings, null, 2)}\n`),
   Bun.write("biome.json", biomeSettings),
   Bun.write("reset.d.ts", resetDTS),
+  Bun.write("fmt.ts", fmtFile),
 ]);
 
 await $`bun fmt`;
