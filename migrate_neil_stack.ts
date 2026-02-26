@@ -52,7 +52,7 @@ Object.assign(currentPackageJson.scripts, {
   lint: "turbo lint:oxlint lint:biome lint:oxfmt",
   "lint:biome": "biome check --diagnostic-level=error",
   "lint:oxfmt":
-    "oxfmt --threads=2 --check || (echo '\\n\\n\\nRun `bun fmt` to fix formatting issues!\\n\\n\\n'; exit 1)",
+    "oxfmt --threads=2 --check || (echo '\n\n\nRun `bun fmt` to fix formatting issues!\n\n\n'; exit 1)",
   "lint:oxlint": "oxlint --threads=2 --type-aware --type-check --quiet",
   prepare: "husky",
   "update-deps": "bun update -i -r",
