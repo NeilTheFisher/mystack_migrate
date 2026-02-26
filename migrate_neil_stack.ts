@@ -57,6 +57,16 @@ Object.assign(currentPackageJson.scripts, {
   prepare: "husky",
   "update-deps": "bun update -i -r",
 });
+Object.assign(currentPackageJson, {
+  "lint-staged": {
+    "*.{ts,tsx,mts,js,jsx,mjs}": [
+      "oxfmt",
+      "biome lint --only=noUnusedImports --fix",
+      "oxlint --threads=2 --type-aware --type-check --quiet",
+      "biome check --diagnostic-level=error --no-errors-on-unmatched",
+    ],
+  },
+});
 
 const currentVscodeSettings = JSON.parse(vscodeText) as {
   [key: string]: object;
