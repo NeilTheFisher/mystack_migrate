@@ -5,10 +5,10 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import oxfmtSettings from "./files/.oxfmtrc.json.txt" with { type: "text" };
-import oxlintSettings from "./files/.oxlintrc.json.txt" with { type: "text" };
 import vscodeSettings from "./files/.vscode/settings.json.txt" with { type: "text" };
 import biomeSettings from "./files/biome.json.txt" with { type: "text" };
 import fmtFile from "./files/fmt.ts.txt" with { type: "text" };
+import oxlintSettings from "./files/oxlint.config.ts.txt" with { type: "text" };
 import resetDTS from "./files/reset.d.ts.txt" with { type: "text" };
 
 // configure the default command so that we can define a positional argument
@@ -58,7 +58,7 @@ if (filesChanged > 0) {
 // oxlint-disable-next-line promise/prefer-await-to-then
 const bunAddPromise = (async () => {
   try {
-    await $`bun add -D @types/bun @total-typescript/ts-reset oxfmt oxlint oxlint-tsgolint husky lint-staged @biomejs/biome`;
+    await $`bun add -D @types/bun @total-typescript/ts-reset oxfmt oxlint oxlint-tsgolint husky lint-staged @biomejs/biome eslint-plugin-better-tailwindcss`;
   } catch (err) {
     console.error("Failed to add dependencies:", err);
     process.exit(1);
@@ -87,6 +87,8 @@ const [packageJsonText, vscodeText, turboJsonText] = await Promise.all([
       console.log("Bruh you don't have turbo added. continuing without it");
     }),
 ]);
+
+await $`rm -f .oxlintrc.json oxlint.config.ts`;
 
 // package.json
 const currentPackageJson = Bun.JSONC.parse(packageJsonText) as {
@@ -130,7 +132,7 @@ if (turboJsonText) {
 await Promise.all([
   Bun.write("package.json", `${JSON.stringify(currentPackageJson, null, 2)}\n`),
   Bun.write(".oxfmtrc.json", oxfmtSettings),
-  Bun.write(".oxlintrc.json", oxlintSettings),
+  Bun.write("oxlint.config.ts", oxlintSettings),
   Bun.write(".vscode/settings.json", `${JSON.stringify(currentVscodeSettings, null, 2)}\n`),
   Bun.write("biome.json", biomeSettings),
   Bun.write("reset.d.ts", resetDTS),
