@@ -1,11 +1,22 @@
 {
-  "name": "mystack_migrate",
-  "private": true,
+  "name": "@neilthefisher/my-bts-stack-migrate",
+  "private": false,
+  "version": "1.0.0",
+  "bin": {
+    "my-bts-stack-migrate": "migrate_neil_stack.ts"
+  },
+  "files": [
+    "migrate_neil_stack.ts",
+    "dist",
+    "files/*"
+  ],
   "scripts": {
     "build": "bun build --target=bun --minify --outdir dist migrate_neil_stack.ts",
     "build_dev": "bun build --target=bun --minify --sourcemap=inline --outdir dist migrate_neil_stack.ts",
     "start": "bun run build && bun dist/migrate_neil_stack.js",
-    "yeet": "git add . && git commit -m 'yeet' && git push"
+    "yeet": "git add . && git commit -m 'yeet' && git push",
+    "prepare": "bun run build",
+    "publish": "bun publish --access public --dry-run"
   },
   "dependencies": {
     "yargs": "^18.0.0"

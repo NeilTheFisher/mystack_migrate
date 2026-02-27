@@ -11,10 +11,10 @@ async function main() {
   const newChangedFiles = Number(await $`git diff --name-only | wc -l`.text());
   const filesChanged = newChangedFiles - startingChangedFiles;
   console.log(
-    `oxfmt formatted ${n} files in ${fin}ms. ${filesChanged === 0 ? "No" : filesChanged} fixes applied.`
+    `oxfmt formatted ${n === "0" ? "" : `${n} `}files in ${fin}ms.`
   );
 
-  const checkedLine = (await $`biome lint --fix`.text())
+  const checkedLine = (await $`biome lint --fix || true`.text())
     .split("\n")
     .findLast((line) => line.startsWith("Checked"));
   console.log(checkedLine);

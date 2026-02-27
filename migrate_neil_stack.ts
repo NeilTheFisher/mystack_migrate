@@ -56,12 +56,14 @@ if (filesChanged > 0) {
 }
 
 // oxlint-disable-next-line promise/prefer-await-to-then
-const bunAddPromise = $`bun add -D @types/bun @total-typescript/ts-reset oxlint-tsgolint`.catch(
-  (err) => {
+const bunAddPromise = (async () => {
+  try {
+    await $`bun add -D @types/bun @total-typescript/ts-reset oxfmt oxlint oxlint-tsgolint husky lint-staged @biomejs/biome`;
+  } catch (err) {
     console.error("Failed to add dependencies:", err);
     process.exit(1);
   }
-);
+})();
 
 // read package.json and vscode settings concurrently
 const [packageJsonText, vscodeText, turboJsonText] = await Promise.all([
@@ -82,8 +84,7 @@ const [packageJsonText, vscodeText, turboJsonText] = await Promise.all([
   Bun.file("turbo.json")
     .text()
     .catch(() => {
-      console.log("Bruh you don't have turbo added");
-      process.exit(1);
+      console.log("Bruh you don't have turbo added. continuing without it");
     }),
 ]);
 
@@ -93,7 +94,7 @@ const currentPackageJson = Bun.JSONC.parse(packageJsonText) as {
 };
 Object.assign(currentPackageJson.scripts, {
   fmt: "bun fmt.ts",
-  lint: "turbo lint:oxlint lint:biome lint:oxfmt",
+  lint: "bun run --parallel lint:oxlint lint:biome lint:oxfmt",
   "lint:biome": "biome check --diagnostic-level=error",
   "lint:oxfmt":
     "oxfmt --threads=2 --check || (echo '\n\n\nRun `bun fmt` to fix formatting issues!\n\n\n'; exit 1)",
@@ -120,8 +121,11 @@ const currentVscodeSettings = Bun.JSONC.parse(vscodeText) as {
 Object.assign(currentVscodeSettings, vscodeSettingsJson);
 
 // turbo.json
-const currentTurboJson = Bun.JSONC.parse(turboJsonText) as { ui: string };
-currentTurboJson.ui = "stream";
+let currentTurboJson: { ui: string } | undefined;
+if (turboJsonText) {
+  currentTurboJson = Bun.JSONC.parse(turboJsonText) as { ui: string };
+  currentTurboJson.ui = "stream";
+}
 
 await Promise.all([
   Bun.write("package.json", `${JSON.stringify(currentPackageJson, null, 2)}\n`),
@@ -131,10 +135,12 @@ await Promise.all([
   Bun.write("biome.json", biomeSettings),
   Bun.write("reset.d.ts", resetDTS),
   Bun.write("fmt.ts", fmtFile),
-  Bun.write("turbo.json", `${JSON.stringify(currentTurboJson, null, 2)}\n`),
+  currentTurboJson && Bun.write("turbo.json", `${JSON.stringify(currentTurboJson, null, 2)}\n`),
 ]);
 
-await Promise.all([bunAddPromise, $`bun fmt`]);
+await bunAddPromise;
+await $`bun fmt`;
+await $`bun lint`;
 
 // requires user input so it goes last
 await $`bun update-deps`;
