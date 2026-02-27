@@ -5,8 +5,12 @@
     "build": "bun build --target=bun --minify --outdir dist migrate_neil_stack.ts",
     "build_dev": "bun build --target=bun --minify --sourcemap=inline --outdir dist migrate_neil_stack.ts"
   },
+  "dependencies": {
+    "yargs": "^18.0.0"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/yargs": "^17.0.35"
   },
   "peerDependencies": {
     "typescript": "^5"

@@ -6,7 +6,7 @@
   // consider using native-preview for better performance
   // these settings may have to be applied to user settings if you are using a vscode workspace
   "typescript.native-preview.tsdk": "./node_modules/@typescript/native-preview/lib",
-  "js/ts.experimental.useTsgo": true,
+  "js/ts.experimental.useTsgo": false,
   "typescript.native-preview.goMemLimit": "2048MiB",
   "biome.requireConfiguration": true,
   "biome.suggestInstallingGlobally": false,

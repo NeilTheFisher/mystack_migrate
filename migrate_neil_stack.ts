@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 // oxlint-disable no-console
 import { $ } from "bun";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
 import oxfmtSettings from "./files/.oxfmtrc.json.txt" with { type: "text" };
 import oxlintSettings from "./files/.oxlintrc.json.txt" with { type: "text" };
@@ -8,6 +10,39 @@ import vscodeSettings from "./files/.vscode/settings.json.txt" with { type: "tex
 import biomeSettings from "./files/biome.json.txt" with { type: "text" };
 import fmtFile from "./files/fmt.ts.txt" with { type: "text" };
 import resetDTS from "./files/reset.d.ts.txt" with { type: "text" };
+
+// configure the default command so that we can define a positional argument
+const argv = await yargs(hideBin(process.argv))
+  // override the script name for help output
+  .scriptName("migrate_neil_stack.js")
+  .usage("Usage: $0 [dir]")
+  .command(
+    "$0 [dir]",
+    "Migrate the project at the given path (defaults to cwd)",
+    (y) =>
+      y.positional("dir", {
+        describe: "Absolute path to the project directory to migrate",
+        type: "string",
+      })
+    // no handler, we just use argv after parsing
+  )
+  .example("$0 /home/user/myproject", "Migrate the project at the given path")
+  .example("$0", "Migrate the current working directory")
+  .help()
+  .alias("h", "help")
+  .version(false)
+  .parse();
+
+const targetDir = argv.dir as string | undefined;
+if (targetDir) {
+  try {
+    process.chdir(targetDir);
+    console.log(`Switched working directory to ${targetDir}`);
+  } catch (err) {
+    console.error(`Cannot change directory to ${targetDir}:`, err);
+    process.exit(1);
+  }
+}
 
 const start = Date.now();
 
@@ -39,7 +74,7 @@ const [packageJsonText, vscodeText, turboJsonText] = await Promise.all([
   Bun.file(".vscode/settings.json")
     .text()
     .catch((err) => {
-      if ((err as any).code === "ENOENT") {
+      if ((err as ErrnoException).code === "ENOENT") {
         return "{}";
       }
       process.exit(1);
