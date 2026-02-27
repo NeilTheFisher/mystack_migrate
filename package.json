@@ -2,7 +2,8 @@
   "name": "mystack_migrate",
   "private": true,
   "scripts": {
-    "build": "bun build --target=bun --sourcemap=inline --outdir dist migrate_neil_stack.ts"
+    "build": "bun build --target=bun --minify --outdir dist migrate_neil_stack.ts",
+    "build_dev": "bun build --target=bun --minify --sourcemap=inline --outdir dist migrate_neil_stack.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"

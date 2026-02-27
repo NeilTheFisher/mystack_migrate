@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+// oxlint-disable no-console
 import { $ } from "bun";
 
 import oxfmtSettings from "./files/.oxfmtrc.json.txt" with { type: "text" };
@@ -27,11 +29,11 @@ const bunAddPromise = $`bun add -D @types/bun @total-typescript/ts-reset oxlint-
 );
 
 // read package.json and vscode settings concurrently
-const [packageJsonText, vscodeText] = await Promise.all([
+const [packageJsonText, vscodeText, turboJsonText] = await Promise.all([
   Bun.file("package.json")
     .text()
     .catch(() => {
-      console.log("Bruh");
+      console.log("Bruhh");
       process.exit(1);
     }),
   Bun.file(".vscode/settings.json")
@@ -42,8 +44,15 @@ const [packageJsonText, vscodeText] = await Promise.all([
       }
       process.exit(1);
     }),
+  Bun.file("turbo.json")
+    .text()
+    .catch(() => {
+      console.log("Bruh you don't have turbo added");
+      process.exit(1);
+    }),
 ]);
 
+// package.json
 const currentPackageJson = Bun.JSONC.parse(packageJsonText) as {
   scripts: Record<string, string>;
 };
@@ -68,13 +77,17 @@ Object.assign(currentPackageJson, {
   },
 });
 
-const vscodeSettingsJSON = Bun.JSONC.parse(vscodeSettings);
+// .vscode/settings.json
+const vscodeSettingsJson = Bun.JSONC.parse(vscodeSettings);
 const currentVscodeSettings = Bun.JSONC.parse(vscodeText) as {
   [key: string]: object;
 };
-Object.assign(currentVscodeSettings, vscodeSettingsJSON);
+Object.assign(currentVscodeSettings, vscodeSettingsJson);
 
-// perform all writes in parallel
+// turbo.json
+const currentTurboJson = Bun.JSONC.parse(turboJsonText) as { ui: string };
+currentTurboJson.ui = "stream";
+
 await Promise.all([
   Bun.write("package.json", `${JSON.stringify(currentPackageJson, null, 2)}\n`),
   Bun.write(".oxfmtrc.json", oxfmtSettings),
@@ -83,6 +96,7 @@ await Promise.all([
   Bun.write("biome.json", biomeSettings),
   Bun.write("reset.d.ts", resetDTS),
   Bun.write("fmt.ts", fmtFile),
+  Bun.write("turbo.json", `${JSON.stringify(currentTurboJson, null, 2)}\n`),
 ]);
 
 await Promise.all([bunAddPromise, $`bun fmt`]);
