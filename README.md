@@ -1,6 +1,7 @@
 A simple CLI tool that migrates a project to the preferred Better-T-Stack linting and formatting configuration.
 
 You can install and run it via `npx` without cloning the repository; see usage below.
+
 ## Publishing & Usage 📦
 
 The package is prepared to be published to npm under the scoped name `@neilthefisher/my-bts-stack-migrate`.
@@ -41,4 +42,3 @@ That will download the latest code from the default branch and try to run the
 
 The script will migrate the project at the given path; omit the path and it
 will operate on the current working directory.
-

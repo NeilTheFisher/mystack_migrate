@@ -1,0 +1,54 @@
+{
+  "js/ts.preferences.preferTypeOnlyAutoImports": true,
+  "js/ts.hover.maximumLength": 1000,
+  "deno.enable": false,
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "typescript.native-preview.tsdk": "./node_modules/@typescript/native-preview/lib",
+  "js/ts.experimental.useTsgo": false,
+  "typescript.native-preview.goMemLimit": "2048MiB",
+  "biome.requireConfiguration": true,
+  "biome.suggestInstallingGlobally": false,
+  "biome.enabled": true,
+  "oxc.enable": true,
+  "oxc.lint.run": "onType",
+  "eslint.run": "onSave",
+  "eslint.problems.shortenToSingleLine": true,
+  "deno.disablePaths": ["."],
+  "terminal.integrated.scrollback": 10000,
+  "oxc.typeAware": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never",
+    "source.fixAll.eslint": "never",
+    "source.fixAll.biome": "never",
+    "source.fixAll.oxc": "always"
+  },
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
+}

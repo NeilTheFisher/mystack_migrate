@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "trailingComma": "es5",
+  "experimentalSortImports": {
+    "groups": [
+      ["unknown"],
+      ["builtin"],
+      ["external"],
+      ["internal"],
+      ["parent"],
+      ["sibling"],
+      ["index"]
+    ]
+  },
+  "experimentalTailwindcss": {
+    "attributes": ["class", "className"],
+    "functions": ["twMerge", "cn", "clsx"],
+    "preserveDuplicates": false,
+    "preserveWhitespace": false
+  },
+  "experimentalSortPackageJson": {
+    "sortScripts": true
+  },
+  "ignorePatterns": [
+    "bun.lock",
+    "routeTree.gen.ts",
+    "**/openapi/clients",
+    "**/openapi/client-tests",
+    ".agents",
+    ".output"
+  ]
+}
