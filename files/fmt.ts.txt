@@ -14,7 +14,10 @@ async function main() {
     `oxfmt formatted ${n} files in ${fin}ms. ${filesChanged === 0 ? "No" : filesChanged} fixes applied.`
   );
 
-  await $`biome lint --fix`;
+  const checkedLine = (await $`biome lint --fix`.text())
+    .split("\n")
+    .findLast((line) => line.startsWith("Checked"));
+  console.log(checkedLine);
 }
 
 try {
