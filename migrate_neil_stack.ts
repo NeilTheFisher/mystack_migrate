@@ -123,10 +123,15 @@ const currentVscodeSettings = Bun.JSONC.parse(vscodeText) as {
 Object.assign(currentVscodeSettings, vscodeSettingsJson);
 
 // turbo.json
-let currentTurboJson: { ui: string } | undefined;
+let currentTurboJson: { ui: string, tasks: Record<string, unknown> } | undefined;
 if (turboJsonText) {
-  currentTurboJson = Bun.JSONC.parse(turboJsonText) as { ui: string };
+  currentTurboJson = Bun.JSONC.parse(turboJsonText) as NonNullable<typeof currentTurboJson>;
   currentTurboJson.ui = "stream";
+  currentTurboJson.tasks = Object.assign(currentTurboJson.tasks, {
+    "//#lint:biome": {},
+    "//#lint:oxfmt": {},
+    "//#lint:oxlint": {},
+  });
 }
 
 await Promise.all([
